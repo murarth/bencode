@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Decoder` struct in crate `bencode`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Decoder">
+
+    <title>bencode::Decoder - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='index.html'>bencode</a></p><script>window.sidebarCurrent = {name: 'Decoder', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>bencode</a>::<wbr><a class='struct' href=''>Decoder</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+            <a id="collapse-all" href="#">[-]</a>&nbsp;<a id="expand-all" href="#">[+]</a>
+        </span><a id='src-84' href='../src/bencode/lib.rs.html#31-33'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Decoder&lt;'a&gt; {
+    // some fields omitted
+}</pre><div class='docblock'><p>Decodes values from a stream of bytes.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;'a&gt; <a class='struct' href='../bencode/struct.Decoder.html' title='bencode::Decoder'>Decoder</a>&lt;'a&gt;</code></h3><div class='impl-items'><h4 id='method.new' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.new' class='fnname'>new</a>(data: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='struct' href='../bencode/struct.Decoder.html' title='bencode::Decoder'>Decoder</a></code></h4>
+<div class='docblock'><p>Constructs a new <code>Decoder</code>, reading from the given byte string.</p>
+</div><h4 id='method.remaining' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.remaining' class='fnname'>remaining</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
+<div class='docblock'><p>Returns the number of bytes remaining in the stream.</p>
+</div><h4 id='method.position' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.position' class='fnname'>position</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></h4>
+<div class='docblock'><p>Returns the current position of the cursor.</p>
+</div><h4 id='method.set_position' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.set_position' class='fnname'>set_position</a>(&amp;mut self, pos: <a href='http://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>)</code></h4>
+<div class='docblock'><p>Sets the current position of the cursor.</p>
+</div><h4 id='method.finish' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.finish' class='fnname'>finish</a>(self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Returns an error if there is data remaining in the stream.</p>
+</div><h4 id='method.read' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read' class='fnname'>read</a>(&amp;mut self, buf: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a series of bytes from the stream equal to <code>buf.len()</code>.
+If fewer bytes are available to read, an error is returned.</p>
+</div><h4 id='method.read_byte' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_byte' class='fnname'>read_byte</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a single byte from the stream. If no bytes are available to read,
+an error is returned.</p>
+</div><h4 id='method.peek_byte' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.peek_byte' class='fnname'>peek_byte</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a single byte from the stream without advancing the cursor.</p>
+</div><h4 id='method.peek_bytes' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.peek_bytes' class='fnname'>peek_bytes</a>(&amp;self, n: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Returns a slice of bytes without advancing the cursor.
+If fewer than <code>n</code> bytes are available, an error is returned.</p>
+</div><h4 id='method.read_integer' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_integer' class='fnname'>read_integer</a>&lt;T: <a class='trait' href='../bencode/trait.Integer.html' title='bencode::Integer'>Integer</a>&gt;(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads an integer value from the stream.</p>
+</div><h4 id='method.read_number' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_number' class='fnname'>read_number</a>&lt;T: <a class='trait' href='../bencode/trait.Integer.html' title='bencode::Integer'>Integer</a>&gt;(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a number from the stream.
+This does not include the <code>i</code> prefix and <code>e</code> suffix.</p>
+</div><h4 id='method.read_bytes' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_bytes' class='fnname'>read_bytes</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a byte string from the stream.</p>
+</div><h4 id='method.read_str' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_str' class='fnname'>read_str</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a UTF-8 encoded string from the stream.</p>
+</div><h4 id='method.read_dict' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_dict' class='fnname'>read_dict</a>&lt;T: <a class='trait' href='../bencode/trait.Decodable.html' title='bencode::Decodable'>Decodable</a>&gt;(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/btree/map/struct.BTreeMap.html' title='collections::btree::map::BTreeMap'>BTreeMap</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, T&gt;, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a key value mapping from the stream.</p>
+</div><h4 id='method.read_list' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_list' class='fnname'>read_list</a>&lt;T: <a class='trait' href='../bencode/trait.Decodable.html' title='bencode::Decodable'>Decodable</a>&gt;(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a series of values from the stream.</p>
+</div><h4 id='method.read_struct' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_struct' class='fnname'>read_struct</a>&lt;T, F&gt;(&amp;mut self, f: F) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt; <span class='where'>where F: <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.FnOnce.html' title='core::ops::FnOnce'>FnOnce</a>(&amp;mut <a class='struct' href='../bencode/struct.Decoder.html' title='bencode::Decoder'>Decoder</a>&lt;'a&gt;) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</span></code></h4>
+<div class='docblock'><p>Reads a key value mapping from the stream as a <code>struct</code>.</p>
+
+<p>The given callable is expected to call <code>read_field</code> for each field
+and <code>read_option</code> for any optional fields, in lexicographical order.</p>
+</div><h4 id='method.read_field' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_field' class='fnname'>read_field</a>&lt;T: <a class='trait' href='../bencode/trait.Decodable.html' title='bencode::Decodable'>Decodable</a>&gt;(&amp;mut self, name: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a single field from the stream.</p>
+</div><h4 id='method.read_option' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_option' class='fnname'>read_option</a>&lt;T: <a class='trait' href='../bencode/trait.Decodable.html' title='bencode::Decodable'>Decodable</a>&gt;(&amp;mut self, name: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads an optional field from the stream.</p>
+</div><h4 id='method.skip_item' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.skip_item' class='fnname'>skip_item</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Advances the cursor beyond the current value.</p>
+</div><h4 id='method.skip' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.skip' class='fnname'>skip</a>(&amp;mut self, n: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Advances the cursor <code>n</code> bytes.</p>
+</div><h4 id='method.skip_while' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.skip_while' class='fnname'>skip_while</a>&lt;P&gt;(&amp;mut self, predicate: P) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt; <span class='where'>where P: <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></span></code></h4>
+<div class='docblock'><p>Advance bytes in the stream until <code>predicate</code> returns <code>false</code>.</p>
+</div><h4 id='method.read_while' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_while' class='fnname'>read_while</a>&lt;P&gt;(&amp;mut self, predicate: P) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt; <span class='where'>where P: <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></span></code></h4>
+<div class='docblock'><p>Reads bytes from the stream until <code>predicate</code> returns <code>false</code>.</p>
+</div><h4 id='method.expect' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.expect' class='fnname'>expect</a>(&amp;mut self, byte: <a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='enum' href='../bencode/enum.DecodeError.html' title='bencode::DecodeError'>DecodeError</a>&gt;</code></h4>
+<div class='docblock'><p>Returns an error if the next byte is not <code>byte</code>.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;'a&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../bencode/struct.Decoder.html' title='bencode::Decoder'>Decoder</a>&lt;'a&gt;</code></h3><div class='impl-items'><h4 id='method.clone' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../bencode/struct.Decoder.html' title='bencode::Decoder'>Decoder</a>&lt;'a&gt;</code></h4>
+<h4 id='method.clone_from' class='tymethod'><a class='stability Unstable' title='Unstable: this function is rarely used'></a><code>fn <a href='#tymethod.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "bencode";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>
