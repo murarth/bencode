@@ -1,0 +1,18 @@
+[package]
+
+name = "bencode"
+description = "Binary encoding format"
+
+documentation = "http://murarth.github.io/bencode/bencode/index.html"
+homepage = "https://github.com/murarth/bencode"
+repository = "https://github.com/murarth/bencode"
+
+keywords = ["bencode", "binary", "encoding"]
+license = "MIT/Apache-2.0"
+readme = "README.md"
+
+version = "0.0.1"
+authors = ["Murarth <murarth@gmail.com>"]
+
+[dependencies]
+sha1 = "0.1.0"
