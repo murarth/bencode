@@ -16,7 +16,9 @@ use sha1::Sha1;
 /// Decodes a value from a stream of bytes.
 pub fn decode<T: Decodable>(data: &[u8]) -> Result<T, DecodeError> {
     let mut d = Decoder::new(data);
-    Decodable::decode(&mut d)
+    let res = try!(Decodable::decode(&mut d));
+    try!(d.finish());
+    Ok(res)
 }
 
 /// Encodes a value into a stream of bytes.
