@@ -2,7 +2,7 @@
 
 Decoder and encoder of the Bencode format for the Rust programming language.
 
-[Documentation](http://murarth.github.io/bencode/bencode/index.html)
+[Documentation](https://docs.rs/bencode/)
 
 ## Usage
 
