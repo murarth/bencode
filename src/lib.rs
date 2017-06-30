@@ -516,7 +516,7 @@ impl ByteStr {
 
     /// Returns the byte string as a `&str`, if it contains only valid UTF-8.
     pub fn as_str(&self) -> Option<&str> {
-        std::str::from_utf8(self.as_bytes()).ok()
+        from_utf8(self.as_bytes()).ok()
     }
 }
 
