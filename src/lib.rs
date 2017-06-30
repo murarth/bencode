@@ -475,7 +475,7 @@ pub enum EncodeError {
 }
 
 /// Represents a value decodable from a bencoded stream.
-pub trait Decodable {
+pub trait Decodable: Sized {
     fn decode(d: &mut Decoder) -> Result<Self, DecodeError>;
 }
 
