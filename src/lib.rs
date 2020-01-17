@@ -16,15 +16,15 @@ use sha1::Sha1;
 /// Decodes a value from a stream of bytes.
 pub fn decode<T: Decodable>(data: &[u8]) -> Result<T, DecodeError> {
     let mut d = Decoder::new(data);
-    let res = try!(Decodable::decode(&mut d));
-    try!(d.finish());
+    let res = Decodable::decode(&mut d)?;
+    d.finish()?;
     Ok(res)
 }
 
 /// Encodes a value into a stream of bytes.
 pub fn encode<T: ?Sized + Encodable>(t: &T) -> Result<Vec<u8>, EncodeError> {
     let mut e = Encoder::new();
-    try!(t.encode(&mut e));
+    t.encode(&mut e)?;
     Ok(e.into_bytes())
 }
 
@@ -77,7 +77,7 @@ impl<'a> Decoder<'a> {
     /// an error is returned.
     pub fn read_byte(&mut self) -> Result<u8, DecodeError> {
         let mut b = [0];
-        try!(self.read(&mut b));
+        self.read(&mut b)?;
         Ok(b[0])
     }
 
@@ -107,16 +107,16 @@ impl<'a> Decoder<'a> {
 
     /// Reads an integer value from the stream.
     pub fn read_integer<T: Integer>(&mut self) -> Result<T, DecodeError> {
-        try!(self.expect(b'i'));
-        let n = try!(self.read_number());
-        try!(self.expect(b'e'));
+        self.expect(b'i')?;
+        let n = self.read_number()?;
+        self.expect(b'e')?;
         Ok(n)
     }
 
     /// Reads a number from the stream.
     /// This does not include the `i` prefix and `e` suffix.
     pub fn read_number<T: Integer>(&mut self) -> Result<T, DecodeError> {
-        let buf = try!(self.read_while(is_number));
+        let buf = self.read_while(is_number)?;
         if buf.is_empty() ||
                 (buf.len() > 1 && buf[0] == b'0') ||
                 buf == b"-0" {
@@ -128,30 +128,30 @@ impl<'a> Decoder<'a> {
 
     /// Reads a byte string from the stream.
     pub fn read_bytes(&mut self) -> Result<Vec<u8>, DecodeError> {
-        let n: usize = try!(self.read_number());
-        try!(self.expect(b':'));
+        let n: usize = self.read_number()?;
+        self.expect(b':')?;
         if self.remaining() < n {
             return Err(DecodeError::Eof);
         }
         let mut buf = vec![0; n];
-        try!(self.read(&mut buf));
+        self.read(&mut buf)?;
         Ok(buf)
     }
 
     /// Reads a UTF-8 encoded string from the stream.
     pub fn read_str(&mut self) -> Result<String, DecodeError> {
-        String::from_utf8(try!(self.read_bytes()))
+        String::from_utf8(self.read_bytes()?)
             .map_err(|_| DecodeError::InvalidUtf8)
     }
 
     /// Reads a key value mapping from the stream.
     pub fn read_dict<T: Decodable>(&mut self)
             -> Result<BTreeMap<String, T>, DecodeError> {
-        try!(self.expect(b'd'));
+        self.expect(b'd')?;
         let mut res = BTreeMap::new();
 
-        while try!(self.peek_byte()) != b'e' {
-            let k = try!(self.read_str());
+        while self.peek_byte()? != b'e' {
+            let k = self.read_str()?;
 
             // Ensure that this key is greater than the greatest existing key
             if !res.is_empty() {
@@ -161,24 +161,24 @@ impl<'a> Decoder<'a> {
                 }
             }
 
-            let v = try!(Decodable::decode(self));
+            let v = Decodable::decode(self)?;
             res.insert(k, v);
         }
 
-        try!(self.expect(b'e'));
+        self.expect(b'e')?;
         Ok(res)
     }
 
     /// Reads a series of values from the stream.
     pub fn read_list<T: Decodable>(&mut self) -> Result<Vec<T>, DecodeError> {
-        try!(self.expect(b'l'));
+        self.expect(b'l')?;
         let mut res = Vec::new();
 
-        while try!(self.peek_byte()) != b'e' {
-            res.push(try!(Decodable::decode(self)));
+        while self.peek_byte()? != b'e' {
+            res.push(Decodable::decode(self)?);
         }
 
-        try!(self.expect(b'e'));
+        self.expect(b'e')?;
         Ok(res)
     }
 
@@ -188,16 +188,16 @@ impl<'a> Decoder<'a> {
     /// and `read_option` for any optional fields, in lexicographical order.
     pub fn read_struct<T, F>(&mut self, f: F) -> Result<T, DecodeError>
             where F: FnOnce(&mut Self) -> Result<T, DecodeError> {
-        try!(self.expect(b'd'));
-        let res = try!(f(self));
+        self.expect(b'd')?;
+        let res = f(self)?;
 
         // Skip any additional fields
-        while try!(self.peek_byte()) != b'e' {
-            try!(self.skip_item());
-            try!(self.skip_item());
+        while self.peek_byte()? != b'e' {
+            self.skip_item()?;
+            self.skip_item()?;
         }
 
-        try!(self.expect(b'e'));
+        self.expect(b'e')?;
         Ok(res)
     }
 
@@ -205,14 +205,14 @@ impl<'a> Decoder<'a> {
     pub fn read_field<T: Decodable>(&mut self, name: &str) -> Result<T, DecodeError> {
         let pos = self.data.position();
 
-        while try!(self.peek_byte()) != b'e' {
-            let key = try!(self.read_str());
+        while self.peek_byte()? != b'e' {
+            let key = self.read_str()?;
 
             if name == key {
                 return Decodable::decode(self);
             } else if &key[..] < name {
                 // This key is less than name. name may be found later.
-                try!(self.skip_item());
+                self.skip_item()?;
             } else {
                 // This key is greater than name.
                 // We won't find name, so bail out now.
@@ -236,31 +236,31 @@ impl<'a> Decoder<'a> {
 
     /// Advances the cursor beyond the current value.
     pub fn skip_item(&mut self) -> Result<(), DecodeError> {
-        match try!(self.peek_byte()) {
+        match self.peek_byte()? {
             b'd' => {
-                try!(self.read_byte());
-                while try!(self.peek_byte()) != b'e' {
-                    try!(self.skip_item());
-                    try!(self.skip_item());
+                self.read_byte()?;
+                while self.peek_byte()? != b'e' {
+                    self.skip_item()?;
+                    self.skip_item()?;
                 }
                 self.expect(b'e')
             }
             b'i' => {
-                try!(self.expect(b'i'));
-                try!(self.skip_while(is_number));
+                self.expect(b'i')?;
+                self.skip_while(is_number)?;
                 self.expect(b'e')
             }
             b'l' => {
-                try!(self.read_byte());
-                while try!(self.peek_byte()) != b'e' {
-                    try!(self.skip_item());
+                self.read_byte()?;
+                while self.peek_byte()? != b'e' {
+                    self.skip_item()?;
                 }
                 self.expect(b'e')
             }
-            b'0' ... b'9' => {
-                let n = try!(self.read_number());
-                try!(self.expect(b':'));
-                try!(self.skip(n));
+            b'0' ..= b'9' => {
+                let n = self.read_number()?;
+                self.expect(b':')?;
+                self.skip(n)?;
                 Ok(())
             }
             b => Err(DecodeError::InvalidByte(b))
@@ -281,8 +281,8 @@ impl<'a> Decoder<'a> {
     /// Advance bytes in the stream until `predicate` returns `false`.
     pub fn skip_while<P>(&mut self, mut predicate: P) -> Result<(), DecodeError>
             where P: FnMut(u8) -> bool {
-        while predicate(try!(self.peek_byte())) {
-            try!(self.read_byte());
+        while predicate(self.peek_byte()?) {
+            self.read_byte()?;
         }
         Ok(())
     }
@@ -293,9 +293,9 @@ impl<'a> Decoder<'a> {
         let mut res = Vec::new();
 
         loop {
-            let b = try!(self.peek_byte());
+            let b = self.peek_byte()?;
             if !predicate(b) { break; }
-            res.push(try!(self.read_byte()));
+            res.push(self.read_byte()?);
         }
 
         Ok(res)
@@ -303,7 +303,7 @@ impl<'a> Decoder<'a> {
 
     /// Returns an error if the next byte is not `byte`.
     pub fn expect(&mut self, byte: u8) -> Result<(), DecodeError> {
-        let b = try!(self.read_byte());
+        let b = self.read_byte()?;
         if b == byte {
             Ok(())
         } else {
@@ -385,8 +385,8 @@ impl Encoder {
 
     /// Writes an integer value to the stream.
     pub fn write_integer<T: Integer>(&mut self, t: T) -> Result<(), EncodeError> {
-        try!(self.write_byte(b'i'));
-        try!(self.write(format!("{}", t).as_bytes()));
+        self.write_byte(b'i')?;
+        self.write(format!("{}", t).as_bytes())?;
         self.write_byte(b'e')
     }
 
@@ -398,8 +398,8 @@ impl Encoder {
 
     /// Writes a byte string to the stream.
     pub fn write_bytes(&mut self, b: &[u8]) -> Result<(), EncodeError> {
-        try!(self.write_number(b.len()));
-        try!(self.write_byte(b':'));
+        self.write_number(b.len())?;
+        self.write_byte(b':')?;
         self.write(b)
     }
 
@@ -412,21 +412,21 @@ impl Encoder {
     pub fn write_dict<K, V>(&mut self, map: &BTreeMap<K, V>)
             -> Result<(), EncodeError>
             where K: Ord + AsRef<str>, V: Encodable {
-        try!(self.write_byte(b'd'));
+        self.write_byte(b'd')?;
 
         for (k, v) in map.iter() {
-            try!(self.write_str(k.as_ref()));
-            try!(v.encode(self));
+            self.write_str(k.as_ref())?;
+            v.encode(self)?;
         }
 
         self.write_byte(b'e')
     }
 
     pub fn write_list<T: Encodable>(&mut self, t: &[T]) -> Result<(), EncodeError> {
-        try!(self.write_byte(b'l'));
+        self.write_byte(b'l')?;
 
         for v in t {
-            try!(v.encode(self));
+            v.encode(self)?;
         }
 
         self.write_byte(b'e')
@@ -438,15 +438,15 @@ impl Encoder {
     /// and `write_option` for any optional fields, in lexicographical order.
     pub fn write_struct<F>(&mut self, f: F) -> Result<(), EncodeError>
             where F: FnOnce(&mut Self) -> Result<(), EncodeError> {
-        try!(self.write_byte(b'd'));
-        try!(f(self));
+        self.write_byte(b'd')?;
+        f(self)?;
         self.write_byte(b'e')
     }
 
     /// Writes a single field to the stream.
     pub fn write_field<T: ?Sized + Encodable>(&mut self, name: &str, t: &T)
             -> Result<(), EncodeError> {
-        try!(self.write_str(name));
+        self.write_str(name)?;
         t.encode(self)
     }
 
@@ -454,7 +454,7 @@ impl Encoder {
     pub fn write_option<T: Encodable>(&mut self, name: &str, t: &Option<T>)
             -> Result<(), EncodeError> {
         if let Some(ref t) = *t {
-            try!(self.write_field(name, t));
+            self.write_field(name, t)?;
         }
         Ok(())
     }
@@ -463,7 +463,7 @@ impl Encoder {
 /// Returns whether the given byte may appear in a number.
 fn is_number(b: u8) -> bool {
     match b {
-        b'-' | b'0' ... b'9' => true,
+        b'-' | b'0' ..= b'9' => true,
         _ => false
     }
 }
@@ -569,13 +569,13 @@ impl Decodable for Hash {
     fn decode(d: &mut Decoder) -> Result<Hash, DecodeError> {
         let mut hash = Hash([0; 20]);
         let start = d.position();
-        try!(d.skip_item());
+        d.skip_item()?;
         let end = d.position();
         let len = (end - start) as usize;
 
         d.set_position(start);
         let mut sha1 = Sha1::new();
-        sha1.update(try!(d.peek_bytes(len)));
+        sha1.update(d.peek_bytes(len)?);
         sha1.output(&mut hash.0);
         d.set_position(end);
 
@@ -612,11 +612,11 @@ impl Value {
 
 impl Decodable for Value {
     fn decode(d: &mut Decoder) -> Result<Value, DecodeError> {
-        match try!(d.peek_byte()) {
-            b'd' => Ok(Value::Dict(try!(d.read_dict()))),
-            b'i' => Ok(Value::Integer(try!(d.read_integer()))),
-            b'l' => Ok(Value::List(try!(d.read_list()))),
-            b'0' ... b'9' => match String::from_utf8(try!(d.read_bytes())) {
+        match d.peek_byte()? {
+            b'd' => Ok(Value::Dict(d.read_dict()?)),
+            b'i' => Ok(Value::Integer(d.read_integer()?)),
+            b'l' => Ok(Value::List(d.read_list()?)),
+            b'0' ..= b'9' => match String::from_utf8(d.read_bytes()?) {
                 Ok(s) => Ok(Value::String(s)),
                 Err(e) => Ok(Value::Bytes(e.into_bytes()))
             },
@@ -869,11 +869,11 @@ mod test {
         fn decode(d: &mut Decoder) -> Result<Test, DecodeError> {
             d.read_struct(|d| {
                 Ok(Test{
-                    alpha: try!(d.read_field("alpha")),
-                    bravo: try!(d.read_field("bravo")),
-                    charlie: try!(d.read_option("charlie")),
-                    delta: try!(d.read_field("delta")),
-                    echo: try!(d.read_field("echo")),
+                    alpha: d.read_field("alpha")?,
+                    bravo: d.read_field("bravo")?,
+                    charlie: d.read_option("charlie")?,
+                    delta: d.read_field("delta")?,
+                    echo: d.read_field("echo")?,
                 })
             })
         }
@@ -882,11 +882,11 @@ mod test {
     impl Encodable for Test {
         fn encode(&self, e: &mut Encoder) -> Result<(), EncodeError> {
             e.write_struct(|e| {
-                try!(e.write_field("alpha", &self.alpha));
-                try!(e.write_field("bravo", &self.bravo));
-                try!(e.write_option("charlie", &self.charlie));
-                try!(e.write_field("delta", &self.delta));
-                try!(e.write_field("echo", &self.echo));
+                e.write_field("alpha", &self.alpha)?;
+                e.write_field("bravo", &self.bravo)?;
+                e.write_option("charlie", &self.charlie)?;
+                e.write_field("delta", &self.delta)?;
+                e.write_field("echo", &self.echo)?;
                 Ok(())
             })
         }
@@ -927,8 +927,8 @@ mod test {
         fn decode(d: &mut Decoder) -> Result<Test2, DecodeError> {
             d.read_struct(|d| {
                 Ok(Test2{
-                    bar: try!(d.read_option("bar")),
-                    foo: try!(d.read_field("foo")),
+                    bar: d.read_option("bar")?,
+                    foo: d.read_field("foo")?,
                 })
             })
         }
@@ -937,8 +937,8 @@ mod test {
     impl Encodable for Test2 {
         fn encode(&self, e: &mut Encoder) -> Result<(), EncodeError> {
             e.write_struct(|e| {
-                try!(e.write_option("bar", &self.bar));
-                try!(e.write_field("foo", &self.foo));
+                e.write_option("bar", &self.bar)?;
+                e.write_field("foo", &self.foo)?;
                 Ok(())
             })
         }
